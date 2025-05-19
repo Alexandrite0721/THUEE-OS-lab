@@ -31,26 +31,25 @@ var (
 	currentNumber = 0
 )
 
-func max(a, b int) int {
-	if a > b {
-		return a
+func main() {
+	if len(os.Args) < 2 {
+		fmt.Println("Usage: program <num_clerks>")
+		return
 	}
-	return b
-}
+	n, _ := strconv.Atoi(os.Args[1])
 
-func readCustomers(filename string) ([]Customer, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
+	scanner := bufio.NewScanner(os.Stdin)
 	var customers []Customer
-	for scanner.Scan() {
+	fmt.Println("请输入顾客信息，每行格式为：顾客序号 进入银行时间 服务时间，输入空行结束：")
+	for {
+		scanner.Scan()
 		line := scanner.Text()
+		if line == "" {
+			break
+		}
 		fields := strings.Fields(line)
 		if len(fields) != 3 {
+			fmt.Printf("该行输入格式不正确：%s，请重新输入\n", line)
 			continue
 		}
 		id, _ := strconv.Atoi(fields[0])
@@ -61,21 +60,6 @@ func readCustomers(filename string) ([]Customer, error) {
 			ArrivalTime: arrival,
 			ServiceTime: service,
 		})
-	}
-	return customers, nil
-}
-
-func main() {
-	if len(os.Args) < 3 {
-		fmt.Println("Usage: program <customers_file> <num_clerks>")
-		return
-	}
-	filename := os.Args[1]
-	n, _ := strconv.Atoi(os.Args[2])
-
-	customers, err := readCustomers(filename)
-	if err != nil {
-		panic(err)
 	}
 
 	sort.Slice(customers, func(i, j int) bool {
@@ -135,7 +119,6 @@ func main() {
 			}
 
 			numberMutex.Lock()
-			ticket := currentNumber
 			currentNumber++
 			numberMutex.Unlock()
 
@@ -176,6 +159,7 @@ func main() {
 	})
 
 	for _, c := range resultList {
-		fmt.Printf("%d %d %d %d\n", c.ArrivalTime, c.StartTime, c.EndTime, c.ClerkID)
+		fmt.Printf("顾客id：%d 到达时间：%d 开始服务时间：%d 结束服务时间：%d 服务柜员id：%d\n",
+			c.CustomerID, c.ArrivalTime, c.StartTime, c.EndTime, c.ClerkID)
 	}
 }
