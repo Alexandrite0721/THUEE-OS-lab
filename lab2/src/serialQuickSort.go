@@ -5,10 +5,7 @@ import "math/rand"
 // 串行快速排序的实现
 func serialQuickSort(arr []int, low, high int) {
 	if low < high {
-		// 获取分区点
 		pivotIndex := partition(arr, low, high)
-
-		// 递归排序左右两部分
 		serialQuickSort(arr, low, pivotIndex-1)
 		serialQuickSort(arr, pivotIndex+1, high)
 	}
@@ -27,15 +24,11 @@ func partition(arr []int, low, high int) int {
 	i := low - 1
 
 	for j := low; j < high; j++ {
-		// 如果当前元素小于pivot
 		if arr[j] < pivot {
 			i++
-			// 交换arr[i]和arr[j]
 			arr[i], arr[j] = arr[j], arr[i]
 		}
 	}
-
-	// 将pivot放在正确的位置
 	arr[i+1], arr[high] = arr[high], arr[i+1]
 	return i + 1
 }

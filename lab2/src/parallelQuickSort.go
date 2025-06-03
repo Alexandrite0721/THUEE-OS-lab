@@ -10,7 +10,6 @@ func parallelQuickSort(arr []int, low, high int, wg *sync.WaitGroup) {
 		return
 	}
 
-	// 如果数据范围有效，则进行排序
 	if low < high {
 		// 分区，获取分区点
 		pivot := partition(arr, low, high)
